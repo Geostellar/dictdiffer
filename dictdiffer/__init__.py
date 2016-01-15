@@ -207,8 +207,11 @@ def diff(first, second, node=None, ignore=None, path_limit=None, expand=False,
 
 
 def patch(diff_result, destination):
-    """Patch the diff result to the old dictionary."""
     destination = copy.deepcopy(destination)
+    return patch_in_place(diff_result, destination)
+
+def patch_in_place(diff_result, destination):
+    """Patch the diff result to the old dictionary."""
 
     def add(node, changes):
         for key, value in changes:
@@ -302,3 +305,16 @@ def revert(diff_result, destination):
 
     """
     return patch(swap(diff_result), destination)
+
+def revert_in_place(diff_result, destination):
+    """Call swap function to revert patched dictionary object.
+
+    Usage example:
+
+        >>> first = {'a': 'b'}
+        >>> second = {'a': 'c'}
+        >>> revert(diff(first, second), second)
+        {'a': 'b'}
+
+    """
+    return patch_in_place(swap(diff_result), destination)
